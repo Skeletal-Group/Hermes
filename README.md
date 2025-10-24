@@ -1,2 +1,3 @@
-# Hermes
-Fast covert timing channel communication for inter-process and inter-processor communication on Windows systems.
+![Logo](https://github.com/Skeletal-Group/Hermes/blob/main/Resource/HermesLogo.png)
+
+## Hermes, a POC for effective covert timing channels on Windows systems
