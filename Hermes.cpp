@@ -138,11 +138,6 @@ HermesInitialize(
 	}
 	
 	//
-	// CPUID EAX=0 ECX=0, highest function parameter and manufacturer ID
-	//
-	__cpuidex( CpuidRegs, 0, 0 );
-
-	//
 	// Use the Intel specific cahce line measurement routine when on Intel systems
 	//
 	HermesMeasureCacheLine = ( decltype( HermesMeasureCacheLine ) )&HermesMeasureCacheLineData;
@@ -600,4 +595,5 @@ HermesReceiveData(
 }
 
 #pragma optimize( pop )
+
 #pragma warning( pop )
