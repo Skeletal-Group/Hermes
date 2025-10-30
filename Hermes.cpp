@@ -481,6 +481,8 @@ HermesGetTransmissionEvent(
 	return FALSE;
 }
 
+#include <cstdio>
+
 BOOLEAN
 HermesSendData( 
 	_In_ LPVOID Data, 
@@ -552,7 +554,8 @@ HermesReceiveData(
 	RtlZeroMemory( Data, BufferLength );
 
 	HERMES_TRANSMIT_BLOCK Block{ };
-	BOOLEAN               TransmissionState = FALSE;
+	BOOLEAN               TransmissionState = FALSE,
+		                  DataWritten       = FALSE;
 	
 	HermesReceiveReliableTransmitBlock( &Block );
 
@@ -586,14 +589,15 @@ HermesReceiveData(
 				}
 
 				RtlCopyMemory( Position, Block.Data, Block.Length );
+
+				DataWritten = TRUE;
 			}
 		} 
 		else return FALSE;
 	}
 
-	return TRUE;
+	return DataWritten;
 }
 
 #pragma optimize( pop )
-
 #pragma warning( pop )
