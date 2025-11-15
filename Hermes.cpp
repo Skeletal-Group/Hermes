@@ -68,12 +68,27 @@ HERMES_EXECUTABLE UINT8 HermesMeasureCacheLineData[ ] =
 	0xC3              // ret
 };
 
+HERMES_EXECUTABLE UINT8 HermesClflushData[ ] =
+{
+	0x66,             // Using the 0x66 prefix for the CLFLUSH instruction
+	                  // results in CLFLUSHOPT on CPUs that support it.
+	0x0F, 0xAE, 0x39, // clflush byte ptr[rcx] 
+	0xC3              // ret
+};
+
 #pragma code_seg( pop )
 
 //
 // Time a load operation from a specified cache line using the TSC.
 //
 UINT32( *HermesMeasureCacheLine )( 
+	_In_ LPVOID CacheLine 
+	) = NULL;
+
+//
+// Flush a cache line from all levels of the cache hierarchy
+//
+VOID( *HermesClflush )(
 	_In_ LPVOID CacheLine 
 	) = NULL;
 
@@ -94,6 +109,8 @@ HermesInitialize(
 	//
 	__cpuidex( CpuidRegs, 7, 0 );
 
+	HermesClflush = ( decltype( HermesClflush ) )&HermesClflushData[ 0 ];
+
 	//
 	// EBX bit 23, CLFLUSHOPT instruction support
 	//
@@ -101,8 +118,9 @@ HermesInitialize(
 	{
 		//
 		// CLFLUSHOPT is not supported on the current system.
+		// Use the regular CLFLUSH instruction by not using the 0x66 prefix.
 		// 
-		return FALSE;
+		HermesClflush = ( decltype( HermesClflush ) )&HermesClflushData[ 1 ];
 	}
 
 	if ( HermesLineSize == 0 )
@@ -133,7 +151,7 @@ HermesInitialize(
 			//
 			// Use ntdll.dll as default communication cache line region.
 			//
-			HermesCacheLines = ( UINT8* )GetModuleHandleA( "kernelbase.dll" );
+			HermesCacheLines = ( UINT8* )GetModuleHandleA( "ntdll.dll" );
 		}
 	}
 	
@@ -169,7 +187,7 @@ HermesSetLines(
 			//
 			// Flush the cache line that corresponds to the current set bit
 			//
-			_mm_clflushopt( HermesCacheLines + ( i * LineSize ) );
+			HermesClflush( HermesCacheLines + ( i * LineSize ) );
 		}
 	}
 }
@@ -328,8 +346,6 @@ HermesBroadcastTransmitBlock(
 		FlushCount--;
 	}
 }
-
-#include <cstdio>
 
 BOOLEAN
 HermesSendReliableTransmitBlock( 
