@@ -1,6 +1,6 @@
 //
 // File:
-//     Hermes.cpp (CRC32C: DAb51830)
+//     Hermes.cpp (CRC32C: 492F6599)
 // 
 // Author(s):
 //     reap@skeletal.group
