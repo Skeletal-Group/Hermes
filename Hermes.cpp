@@ -500,8 +500,6 @@ HermesGetTransmissionEvent(
 	return FALSE;
 }
 
-#include <cstdio>
-
 BOOLEAN
 HermesSendData( 
 	_In_ LPVOID Data, 
