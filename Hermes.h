@@ -1,6 +1,9 @@
 //
 // File:
-//     Hermes.h
+//     Hermes.h (CRC32C: 627AcC9A)
+// 
+// Author(s):
+//     reap@skeletal.group
 // 
 // Abstract:
 //     A fast, reliable and refined covert timing channel proof of concept
